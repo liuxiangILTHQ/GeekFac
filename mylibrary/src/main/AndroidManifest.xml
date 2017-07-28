@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest package="com.geekid.other"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:sharedUserId="gee.gee">
+
+    <application android:allowBackup="true"
+                 android:label="@string/app_name"
+                 android:process="gee.gee"
+                 android:supportsRtl="true">
+
+        <activity android:name="com.geekid.other.Oher">
+
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.geekid.other.other"/>
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
