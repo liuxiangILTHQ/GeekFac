@@ -31,6 +31,11 @@ public class SnSettingActivity extends Activity implements OnClickListener
     private String[] customId = {"001", "002", "003", "004", "005", "006", "007", "008", "009",
             "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020", "XXX"};
 
+    private String[] feederCustomType={"宝宝村","极客宝贝"};
+    private String[] feederCustomId={"000","007"};
+
+    private int type1,type2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -52,19 +57,19 @@ public class SnSettingActivity extends Activity implements OnClickListener
         ll_other.setVisibility(View.GONE);
         editText2.setText(AppContext.DATE_FORMAT_DAY_INT.format(new Date()).substring(2));
 
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, proType);
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, proType);
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner1.setAdapter(arrayAdapter1);
 
-        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, customType);
+        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, customType);
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner2.setAdapter(arrayAdapter2);
 
         Intent intent = getIntent();
         if (intent != null)
         {
-            int type1 = intent.getIntExtra("type1", 0);
-            int type2 = intent.getIntExtra("type2", 0);
+            type1 = intent.getIntExtra("type1", 0);
+            type2 = intent.getIntExtra("type2", 0);
             spinner1.setSelection(type1);
             spinner2.setSelection(type2);
         }
@@ -108,6 +113,29 @@ public class SnSettingActivity extends Activity implements OnClickListener
 
             }
         });
+
+        switch (type1){
+            case 4://奶瓶模组
+                arrayAdapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, feederCustomType);
+                arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner2.setAdapter(arrayAdapter2);
+                spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+                {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapter, View view, int position, long id)
+                    {
+                        String str = feederCustomId[position];
+                        textView2.setText(str);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0)
+                    {
+
+                    }
+                });
+                break;
+        }
     }
 
     @Override

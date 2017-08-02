@@ -11,6 +11,17 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug {
+            tasks.whenTaskAdded { task ->
+                if (task.name.contains('AndroidTest')
+                        || task.name.contains('Test')
+                        || task.name.contains('Aidl')
+                        || task.name.contains('Ndk')
+                        || task.name.contains('Jni')) {
+                    task.enabled = false
+                }
+            }
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
