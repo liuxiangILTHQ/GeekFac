@@ -308,6 +308,12 @@ public class BleService extends Service
             }
 
             @Override
+            public void updateBleDevice(int pos, int rssi)
+            {
+
+            }
+
+            @Override
             public void getScanStatus(boolean isScanning)
             {
 

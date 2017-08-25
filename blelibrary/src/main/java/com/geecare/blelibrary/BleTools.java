@@ -260,7 +260,15 @@ public class BleTools implements IBleTools
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
                 if (iBleScan != null)
                 {
-                    iBleScan.getScanStatus(true);
+                    getHandler().post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            iBleScan.getScanStatus(true);
+                        }
+                    });
+
                 }
 
                 getHandler().postDelayed(new Runnable()
@@ -316,7 +324,15 @@ public class BleTools implements IBleTools
         mScanning = false;
         if (iBleScan != null)
         {
-            iBleScan.getScanStatus(false);
+            getHandler().post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    iBleScan.getScanStatus(false);
+                }
+            });
+
         }
         mBluetoothAdapter.stopLeScan(mLeScanCallback);
         return true;
@@ -790,19 +806,53 @@ public class BleTools implements IBleTools
                         return;
                     }
                 }
-                for (BleDevice bd : deviceList)
+//                for (BleDevice bd : deviceList)
+//                {
+//                    //已经搜索到的设备，直接更新其信号值
+//                    if (bleDevice.getBleMacAddr().equals(bd.getBleMacAddr()))
+//                    {
+//                        bd.setRssi(rssi);
+//                        if (iBleScan != null && deviceList.size() > 0)
+//                        {
+//                            getHandler().post(new Runnable()
+//                            {
+//                                @Override
+//                                public void run()
+//                                {
+//                                    iBleScan.getScanBleDevices(bleDevice);
+//                                }
+//                            });
+//                        }
+//                        return;
+//                    }
+//                }
+                for(int i=0;i<deviceList.size();i++)
                 {
+                    final BleDevice bd=deviceList.get(i);
                     if (bleDevice.getBleMacAddr().equals(bd.getBleMacAddr()))
                     {
                         bd.setRssi(rssi);
+                        final int pos=i;
+                        if (iBleScan != null)
+                        {
+                            getHandler().post(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    iBleScan.updateBleDevice(pos,rssi);
+                                }
+                            });
+                        }
                         return;
                     }
+
                 }
 
                 synchronized (this)
                 {
                     deviceList.add(bleDevice);
-                    final BleDevice b = deviceList.get(deviceList.size() - 1);
+                    final BleDevice bd = deviceList.get(deviceList.size() - 1);
                     //
                     //Log.d(TAG, "addr:" + b.getBleMacAddr() + " rssi:" + b.getRssi());
                     if (iBleScan != null && deviceList.size() > 0)
@@ -812,7 +862,7 @@ public class BleTools implements IBleTools
                             @Override
                             public void run()
                             {
-                                iBleScan.getScanBleDevices(b);
+                                iBleScan.getScanBleDevices(bd);
                             }
                         });
                     }

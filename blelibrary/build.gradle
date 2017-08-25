@@ -14,6 +14,7 @@ android {
         debug {
             tasks.whenTaskAdded { task ->
                 if (task.name.contains('AndroidTest')
+                        || task.name.contains("mockableAndroidJar")
                         || task.name.contains('Test')
                         || task.name.contains('Aidl')
                         || task.name.contains('Ndk')

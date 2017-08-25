@@ -13,5 +13,7 @@ public interface IBleScan
      */
     void getScanBleDevices(BleDevice bleDevice);
 
+    void updateBleDevice(int pos,int rssi);
+
     void getScanStatus(boolean isScanning);
 }
