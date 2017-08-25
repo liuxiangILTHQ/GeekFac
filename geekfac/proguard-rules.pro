@@ -178,4 +178,4 @@
     # Gson specific classes
     -keep class sun.misc.Unsafe { *; }
     # Application classes that will be serialized/deserialized over Gson
-    -keep class com.google.gson.examples.android.model.** { *; }
+    -keep class com.google.gson.** { *; }

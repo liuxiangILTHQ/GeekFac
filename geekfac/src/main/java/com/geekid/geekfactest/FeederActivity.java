@@ -33,6 +33,7 @@ import com.geekid.geekfactest.ble.BleConstants;
 import com.geekid.geekfactest.ble.BottleService;
 import com.geekid.geekfactest.dfu.AutoDfuActivity;
 import com.geekid.geekfactest.model.DataInfo;
+import com.geekid.geekfactest.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,20 +44,21 @@ public class FeederActivity extends Activity implements OnClickListener
 {
     private EditText editText1, editText2;
     private Button button1, button2, button3, button4, button5, button33, button44, button444, send_bt;
-    private Button button_uv1, button_uv2, button_uv3,bt_open_warm;
-    private TextView textView, textView0, textView2, textView6, textView8, hex,tv_warm_status,tv_temp_f;
+    private Button button_uv1, button_uv2, button_uv3, bt_open_warm;
+    private TextView textView, textView0, textView2, textView6, textView8, hex, tv_warm_status, tv_temp_f;
 
     private ListView listview;
     private DataInfoAdapter dataInfoAdapter;
-    List<DataInfo> dataInfos;
+    private List<DataInfo> dataInfos;
 
     private Intent intent;
     private BottleService tempService = null;
 
     private String hexName = "feederBase_20170418_v116.hex";
-    private String newHexName = "Feeder_v210_0628_1.hex";
-    String addr;
-    BleDevice mDevice;
+    private String hexName2 = "Feeder_v210_0628_1.hex";
+    private String hexName3 = "Feeder_v310_0822.hex";
+    private String addr;
+    private BleDevice mDevice;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -107,7 +109,6 @@ public class FeederActivity extends Activity implements OnClickListener
             if (tempService.isConnected())
             {
                 textView0.setText("蓝牙已连接");
-
             }
         }
 
@@ -116,7 +117,7 @@ public class FeederActivity extends Activity implements OnClickListener
         {
         }
     };
-
+    String path = Environment.getExternalStorageDirectory() + "/feeder.txt";
     private final BroadcastReceiver mReceiver = new BroadcastReceiver()
     {
         @Override
@@ -133,7 +134,13 @@ public class FeederActivity extends Activity implements OnClickListener
                     //if(isBottom)
                     //Log.d("lx",""+listview.getLastVisiblePosition()+","+listview.getCount());
                     if (listview.getLastVisiblePosition() == (listview.getCount() - 2))
-                    listview.setSelection(listview.getCount()-1);
+                        listview.setSelection(listview.getCount() - 1);
+                    Date dt = new Date();
+                    dt.setTime(dataInfo.getTime());
+                    String sDateTime = AppContext.DATE_FORMAT.format(dt);
+                    FileUtils.appandStringToFile(path, dataInfo.getTemperature() / 10 + "\t" + dataInfo
+                            .getHumidity()
+                            + "\t" + dataInfo.getStatus() + "\t" + sDateTime + "\n", true);
                 }
             } else if (action.equals(BleConstants.BOTTLE_ACTION_DEVICE_CONNECTING))
             {
@@ -152,15 +159,15 @@ public class FeederActivity extends Activity implements OnClickListener
             {
                 textView0.setText("蓝牙已关闭");
 
-            }else if (action.equals("rssi_coming"))
+            } else if (action.equals("rssi_coming"))
             {
                 if (intent.getStringExtra("content") != null)
                 {
                     String content = intent.getStringExtra("content");
-                    textView2.setText(content+" DB");
+                    textView2.setText(content + " DB");
                 }
 
-            }  else if (action.equals(BleConstants.ACTION_WARM_STATUS))
+            } else if (action.equals(BleConstants.ACTION_WARM_STATUS))
             {
                 if (intent.getStringExtra("content") != null)
                 {
@@ -173,7 +180,7 @@ public class FeederActivity extends Activity implements OnClickListener
                         textView6.setText("未加热");
                     }
                 }
-            }else if (action.equals(BleConstants.ACTION_WARM_SWITCH))
+            } else if (action.equals(BleConstants.ACTION_WARM_SWITCH))
             {
                 if (intent.getStringExtra("content") != null)
                 {
@@ -186,15 +193,14 @@ public class FeederActivity extends Activity implements OnClickListener
                         tv_warm_status.setText("关");
                     }
                 }
-            }else if (action.equals(BleConstants.ACTION_TEMP_F_COMING))
+            } else if (action.equals(BleConstants.ACTION_TEMP_F_COMING))
             {
                 if (intent.getStringExtra("content") != null)
                 {
                     String content = intent.getStringExtra("content");
                     tv_temp_f.setText(content);
                 }
-            }
-            else if (action.equals(BleConstants.BOTTLE_ACTION_DEVICE_SOC_UPDATED))
+            } else if (action.equals(BleConstants.BOTTLE_ACTION_DEVICE_SOC_UPDATED))
             {
                 if (intent.getStringExtra("content") != null)
                 {
@@ -240,7 +246,7 @@ public class FeederActivity extends Activity implements OnClickListener
                     } else //if (content.startsWith("AA"))
                     {
                         hex.setTextColor(Color.BLUE);
-                        romVer=content;
+                        romVer = content;
                         hex.setText("固件版本号为:" + content);
                     }
                 }
@@ -263,7 +269,7 @@ public class FeederActivity extends Activity implements OnClickListener
         button444 = (Button) findViewById(R.id.button444);
         button5 = (Button) findViewById(R.id.button5);
         button33 = (Button) findViewById(R.id.button33);
-        bt_open_warm= (Button) findViewById(R.id.bt_open_warm);
+        bt_open_warm = (Button) findViewById(R.id.bt_open_warm);
 
         button_uv1 = (Button) findViewById(R.id.button_uv1);
         button_uv2 = (Button) findViewById(R.id.button_uv2);
@@ -276,7 +282,7 @@ public class FeederActivity extends Activity implements OnClickListener
         textView6 = (TextView) findViewById(R.id.textView6);
         textView8 = (TextView) findViewById(R.id.textView8);
         tv_warm_status = (TextView) findViewById(R.id.tv_warm_status);
-        tv_temp_f= (TextView) findViewById(R.id.tv_temp_f);
+        tv_temp_f = (TextView) findViewById(R.id.tv_temp_f);
         listview = (ListView) findViewById(R.id.listView1);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
@@ -296,54 +302,48 @@ public class FeederActivity extends Activity implements OnClickListener
         dataInfoAdapter = new DataInfoAdapter(this, dataInfos);
         listview.setAdapter(dataInfoAdapter);
 
-        listview.setOnScrollListener(new AbsListView.OnScrollListener() {
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                switch (scrollState) {
+        listview.setOnScrollListener(new AbsListView.OnScrollListener()
+        {
+            public void onScrollStateChanged(AbsListView view, int scrollState)
+            {
+                switch (scrollState)
+                {
                     // 当不滚动时
                     case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                         // 判断滚动到底部
-                        if (listview.getLastVisiblePosition() == (listview.getCount() - 1)) {
-                            Log.d("lx","onScrollStateChanged bottom");
-                            //listview.setStackFromBottom(true);
-                            //listview.setTranscriptMode(TRANSCRIPT_MODE_ALWAYS_SCROLL);
-                            //listview.setSelection(listview.getCount()-1);
+                        if (listview.getLastVisiblePosition() == (listview.getCount() - 1))
+                        {
+                            Log.d("lx", "onScrollStateChanged bottom");
                         }
                         // 判断滚动到顶部
-                        else if(listview.getFirstVisiblePosition() == 0){
-                            Log.d("lx","onScrollStateChanged top");
-                            //listview.setStackFromBottom(false);l
-                            //listview.setTranscriptMode(TRANSCRIPT_MODE_NORMAL);
-                        }else {
-                            Log.d("lx","onScrollStateChanged middle");
-                            //listview.setStackFromBottom(false);
-                            //listview.setTranscriptMode(TRANSCRIPT_MODE_NORMAL);
-                            //listview.setSelection(listview.getFirstVisiblePosition());
+                        else if (listview.getFirstVisiblePosition() == 0)
+                        {
+                            Log.d("lx", "onScrollStateChanged top");
+                        } else
+                        {
+                            Log.d("lx", "onScrollStateChanged middle");
                         }
                         break;
                 }
             }
 
             @Override
-            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+            {
                 //Log.d("lx","onScroll");
-                //listview.setStackFromBottom(false);
-                //listview.setTranscriptMode(TRANSCRIPT_MODE_NORMAL);
-                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount > 0) {
+                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount > 0)
+                {
                     // 滚动到最后一行了
-                    isBottom=true;
-                    //listview.setStackFromBottom(true);
-                    //listview.setTranscriptMode(TRANSCRIPT_MODE_ALWAYS_SCROLL);
-                }else {
-                    isBottom=false;
-                    //listview.setStackFromBottom(false);
-                    //listview.setTranscriptMode(TRANSCRIPT_MODE_NORMAL);
-                    //listview.setSelection(firstVisibleItem);
+                    isBottom = true;
+                } else
+                {
+                    isBottom = false;
                 }
             }
         });
     }
 
-    boolean isBottom=false;
+    boolean isBottom = false;
 
     String sn = "";
 
@@ -391,20 +391,25 @@ public class FeederActivity extends Activity implements OnClickListener
                 tempService.write("5561");
                 break;
             case R.id.button4:// 固件升级
-                romVer="";
+                romVer = "";
                 tempService.write("5561");
                 handler.postDelayed(new Runnable()
                 {
                     @Override
                     public void run()
                     {
-                        if(romVer.startsWith("1")){
+                        if (romVer.startsWith("1"))
+                        {
                             upgrade(hexName, true);
-                        }else if(romVer.startsWith("2")){
-                            upgrade(newHexName, true);
+                        } else if (romVer.startsWith("2"))
+                        {
+                            upgrade(hexName2, true);
+                        } else if (romVer.startsWith("3"))
+                        {
+                            upgrade(hexName3, true);
                         }
                     }
-                },1000);
+                }, 1000);
 
                 break;
             case R.id.button5:
@@ -561,8 +566,13 @@ public class FeederActivity extends Activity implements OnClickListener
             Date dt = new Date();
             dt.setTime(dataInfo.getTime());
             String sDateTime = AppContext.DATE_FORMAT.format(dt);
-            tv_time.setText(sDateTime);
-
+            if (dataInfo.getStatus() == 1)
+            {
+                tv_time.setText(sDateTime + " 加热中");
+            } else
+            {
+                tv_time.setText(sDateTime + " 未加热");
+            }
             return vg;
         }
     }

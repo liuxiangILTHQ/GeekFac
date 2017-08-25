@@ -191,7 +191,7 @@ public class BottleService extends Service
                 jobHandler.sendEmptyMessageDelayed(What+3, 3000);
             }else if (msg.what == What+3)
             {
-                write("55100128");//set tempf
+                write("5510012d");//set tempf
             }
 
         }

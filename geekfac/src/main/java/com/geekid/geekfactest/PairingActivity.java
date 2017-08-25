@@ -144,33 +144,32 @@ public class PairingActivity extends Activity
             }
 
             @Override
+            public void updateBleDevice(int pos, int rssi)
+            {
+                deviceList.get(pos).setRssi(rssi);
+                deviceAdapter.notifyDataSetChanged();
+            }
+
+            @Override
             public void getScanStatus(final boolean isScanning)
             {
-                mHandler.post(new Runnable()
+                if (isScanning)
                 {
-                    @Override
-                    public void run()
+                    mBleScanButton.setText("取消扫描");
+                    mScanTips.setText("正在扫描...");
+                    mScanLoading.setVisibility(View.VISIBLE);
+                } else
+                {
+                    if (deviceList.size() < 1)
                     {
-                        if (isScanning)
-                        {
-                            mBleScanButton.setText("取消扫描");
-                            mScanTips.setText("正在扫描...");
-                            mScanLoading.setVisibility(View.VISIBLE);
-                        } else
-                        {
-                            if (deviceList.size() < 1)
-                            {
-                                mScanTips.setText("未能寻找到蓝牙设备");
-                            } else
-                            {
-                                mScanTips.setText("请从上面列表中选择您的设备");
-                            }
-                            mScanLoading.setVisibility(View.GONE);
-                            mBleScanButton.setText("启动扫描");
-                        }
+                        mScanTips.setText("未能寻找到蓝牙设备");
+                    } else
+                    {
+                        mScanTips.setText("请从上面列表中选择您的设备");
                     }
-                });
-
+                    mScanLoading.setVisibility(View.GONE);
+                    mBleScanButton.setText("启动扫描");
+                }
             }
 
         });
@@ -179,7 +178,8 @@ public class PairingActivity extends Activity
         {
             mScanTips.setText("请打开蓝牙");
             BleTools.getInstantce().openBle(this);
-        }else{
+        } else
+        {
             checkAndroidVerAndScan();
         }
 

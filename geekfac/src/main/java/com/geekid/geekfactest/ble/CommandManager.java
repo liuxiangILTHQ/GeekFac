@@ -247,6 +247,7 @@ public class CommandManager
     }
 
     int currTemp=0;
+    int status=0;
 
     public void onRecvBottleData(byte[] value)
     {
@@ -272,6 +273,7 @@ public class CommandManager
                 DataInfo dataInfos = new DataInfo();
                 dataInfos.setTemperature(currTemp);
                 dataInfos.setHumidity(angle);
+                dataInfos.setStatus(status);
                 dataInfos.setTime(System.currentTimeMillis());
                 BleUtils.broadcastUpdate(context, BleConstants.BOTTLE_ACTION_DATA_UPDATED, dataInfos);
                 //AppContext.logInfo("pos:"+pos+",angle:"+angle);
@@ -341,6 +343,7 @@ public class CommandManager
                 break;
             case 0x15://反馈奶瓶实时的加热状态
                 int warm_status = decStr2Int(valueStr.substring(6, 8));
+                status=warm_status;
                 //AppContext.logInfo("warm_status:" + warm_status);
                 //mCallbacks.onRecvWarmStatus(warm_status);
                 BleUtils.broadcastUpdate(context, BleConstants.ACTION_WARM_STATUS, warm_status + "");

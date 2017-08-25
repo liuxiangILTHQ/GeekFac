@@ -27,12 +27,14 @@ public class SnSettingActivity extends Activity implements OnClickListener
     private String[] proId = {"012", "011", "021", "031", "041"};
     private String[] customType = {"帮贝怡", "知更鸟", "贝舒乐", "好之", "全面时代", "喜蓓", "极客宝贝",
             "重庆澳蓝朵BBG", "功夫龙", "德邦首护Baby", "乖婴乐", "大爱之都Idorbaby", "阿朵云豆",
-            "巧乐萌", "芷御坊", "阿里巴巴ALIBABA", "潔環", "帕尔舒", "NautrueBabyCare","茵乐夏尔","手动输入客户"};
+            "巧乐萌", "芷御坊", "阿里巴巴ALIBABA", "潔環", "帕尔舒", "NautrueBabyCare","茵乐夏尔","littleone",
+            "手动输入客户"};
     private String[] customId = {"001", "002", "003", "004", "005", "006", "007", "008", "009",
-            "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020", "XXX"};
+            "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020", "021",
+            "XXX"};
 
-    private String[] feederCustomType={"宝宝村","极客宝贝"};
-    private String[] feederCustomId={"000","007"};
+    private String[] feederCustomType={"宝宝村","AIPOO","极客宝贝"};
+    private String[] feederCustomId={"000","001","007"};
 
     private int type1,type2;
 

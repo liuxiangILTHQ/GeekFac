@@ -9,7 +9,19 @@ public class DataInfo implements Serializable
 	private int id;
 	private int temperature;
 	private int humidity;
-	private long time;
+    private int status;
+
+    public int getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(int status)
+    {
+        this.status = status;
+    }
+
+    private long time;
 	
 	public int getId() {
 		return id;
